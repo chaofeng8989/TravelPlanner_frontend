@@ -6,6 +6,7 @@ function App() {
   return (
       <div>
         <h1>this is a test</h1>
+        <h1>test pipeline</h1>
         <GoogleMap />  
 
       </div>
