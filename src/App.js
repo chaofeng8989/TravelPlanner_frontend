@@ -7,7 +7,6 @@ function App() {
       <div>
         <h1>this is a test</h1>
         <h1>test pipeline</h1>
-        <h1>test pipeline2</h1>
 
         <GoogleMap />  
 
