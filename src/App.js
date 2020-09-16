@@ -1,17 +1,12 @@
 import React from 'react';
-import './App.css';
-import GoogleMap from './Components/GoogleMap';
+import Header from './Components/Header';
+
 
 function App() {
-  return (
-      <div>
-        <h1>this is a test</h1>
-        <h1>test pipeline</h1>
-
-        <GoogleMap />  
-
+    return (
+      <div className="App">
+        <Header />
       </div>
-  );
-}
-
+      );
+  }
 export default App;

@@ -1,0 +1,13 @@
+.Itinary{
+    display: flex;
+}
+
+.ItemDisplayTable{
+    width: 400px;
+}
+
+.GoogleMap{
+    /* position: absolute; */
+    padding: 10pt;
+    right: 200px;
+}
