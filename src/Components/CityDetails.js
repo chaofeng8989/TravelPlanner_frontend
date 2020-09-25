@@ -3,6 +3,7 @@ import InsertPage from './InsertPage';
 import PlaceList from './PlaceList';
 import Axios from 'axios';
 import {GET_PLACE} from '../constant';
+import { withRouter } from "react-router-dom"
 
 class CityDetails extends Component{
   constructor () {
@@ -89,4 +90,4 @@ class CityDetails extends Component{
         )
     }
 }
-export default CityDetails
+export default withRouter(CityDetails);

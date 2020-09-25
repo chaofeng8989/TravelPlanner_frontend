@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import { Collapse, Select, Button } from 'antd';
+import { Collapse, Button } from 'antd';
 import 'antd/dist/antd.css';
-import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
+//import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
 import Axios from 'axios';
 import {BASE_URL} from '../constant';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css'; 
+import { withRouter } from "react-router-dom"
 
 const { Panel } = Collapse;
-const { Option } = Select;
+//const { Option } = Select;
 
 var No_Rec = "No Recommendation available.";
 var No_Review = "No Review Available.";
@@ -23,8 +24,20 @@ class Recommendation extends Component {
         };
     }
 
+    // jump page function
+    toOtherRoute = (url) => {
+        const urlObj = {
+            pathname: `${url}`,
+            state: {
+
+            }
+        }
+        this.props.history.push(urlObj)
+    }
+
     testApi = () => {
-        // const {city, state, country} = setting;
+        const {city, state} = this.props.location.key;
+        console.log(city, state);
         const url = `${BASE_URL}city?city=seattle,wa,usa`;
         this.setState({
             loading: true,
@@ -64,28 +77,26 @@ class Recommendation extends Component {
       
         function createPanel(i) {
             return (
-                    <Panel 
-                        header={textsList.length >= 1 ? trips.interest[1] : No_Rec}
-                        extra={<Popup 
-                                    trigger={<button> Review</button>} 
-                                    position="bottom"
-                                    closeOnDocumentClick={true}
-                                    >
-                                    {No_Review}
-                                </Popup>}
-                        // disabled={this.state.panelStatus === false}
-                        >
-                        <div>{textsList[i-1]}</div>
-                        <Link to="/ItinaryHeader">
-                            <Button
-                                type="default"
-                                size="small"
-                                // onClick={this.selectPlan}
+                <Panel 
+                    header={textsList.length >= 1 ? trips.interest[1] : No_Rec}
+                    extra={<Popup 
+                                trigger={<button> Review</button>} 
+                                position="bottom"
+                                closeOnDocumentClick={true}
                                 >
-                                Show Itinary
-                            </Button>
-                        </Link>
-                    </Panel>
+                                {No_Review}
+                            </Popup>}
+                    // disabled={this.state.panelStatus === false}
+                    >
+                    <div>{textsList[i-1]}</div>
+                    <Button
+                        type="default"
+                        size="small"
+                        onClick={this.toOtherRoute('/home/Itinary')}
+                        >
+                            Show Itinary
+                    </Button>
+                </Panel>
             )
           }
 
@@ -93,7 +104,11 @@ class Recommendation extends Component {
         const { expandIconPosition } = this.state.expandIconPosition;
         return (
             <div>
-                <Button><Link to ="TripPara">Desgin your own tour</Link></Button>
+                <Button
+                    onClick={this.toOtherRoute('/home/CityDetails')}
+                >
+                    Desgin your own tour
+                </Button>
                 <div className="recommendation">
                     <Button className="testAPI"
                         size="small"
@@ -126,4 +141,4 @@ class Recommendation extends Component {
     }
 }
 
-export default Recommendation;
+export default withRouter(Recommendation);

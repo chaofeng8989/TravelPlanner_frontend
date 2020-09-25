@@ -1,15 +1,23 @@
 import React from 'react';
-import Header from './Components/Header';
-import Footer from './Components/Footer';
+import './App.css';
+import { sebRoutes } from "./router"
+import { Route, Redirect } from "react-router-dom"
+import Admin from "./Components/admin/Admin"
 
-//布局大概是，header 和 footer，
-//然后header里会call navigation，
-//然后navigation，route去不同页面，每一个页面都是main
+
+
 function App() {
     return (
       <div className="App">
-        <Header />
-        <Footer />
+        <Admin>    {/*主页面布局*/}
+          {
+            /*渲染二级路由*/
+            sebRoutes.map((item) => {
+              return <Route key={item.path} path={item.path} component={item.component} />
+            })
+          }
+          <Redirect from="/home" to="/home/MainPage" exact />
+        </Admin>
       </div>
       );
   }
