@@ -1,14 +1,7 @@
 import React, {Component} from 'react';
 import GoogleMap from './GoogleMap';
-<<<<<<< HEAD
 import { withRouter } from "react-router-dom";
-
-class Itinary extends Component{
-=======
 import { Button } from 'antd';
-import { withRouter } from "react-router-dom"
-
-
 
 class Itinary extends Component{
 
@@ -17,7 +10,6 @@ class Itinary extends Component{
         console.log(this.props.location.state.key)
     }
 
->>>>>>> e66d92b0fcc5a2e57d4fb22f9b2320763be77169
     render() {
         
         return (

@@ -6,11 +6,17 @@ class InsertPage extends Component {
     constructor(){
         super();
         this.state = {
-            interest: [],
-            transportation: [],
+            interest: "",
+            transportation: "",
         }
 
     }
+
+    onChangeInterest = setting => {
+        this.setState({
+          interest: setting.target.value,
+        });
+    };
 
     clickInterest = () => {
         console.log(this.state);
@@ -22,29 +28,17 @@ class InsertPage extends Component {
     render(){
         const cityInterest = this.props.cityInfo? this.props.cityInfo.interest: [];
         const cityTransp = this.props.cityInfo? this.props.cityInfo.transportation: [];
+        var iterator = cityInterest.values(); 
+ 
         return(   
             <div>
                 <div className="insert-box">
                     <div>
                     <label>Interest: </label>
-                    <List
-                        className="sat-list"
-                        itemLayout="horiztonal"
-                        size="small"
-                        dataSource={cityInterest}
-                        renderItem={item => (
-                            <List.Item
-                                actions={[<Radio dataInfo={item} onClick={this.clickInterest}/>]}
-                            >
-                                <List.Item.Meta
-                                    avatar={<Avatar size={50} shape="square" />}
-                                    title={<p>{item.satname}</p>}
-                                    description={item}
-                                />
-    
-                            </List.Item>
-                        )}
-                    />
+                    <Radio.Group onChange={this.onChangeInterest}>
+                        <Radio value={cityInterest[0]}>{cityInterest[0]}</Radio>
+                        <Radio value={cityInterest[1]}>{cityInterest[1]}</Radio>
+                    </Radio.Group>
                     </div>
                     <div>
                         <label>Transportation: </label>
