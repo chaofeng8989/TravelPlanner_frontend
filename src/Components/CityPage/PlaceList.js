@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { List, Avatar, Button, Checkbox, Spin, Radio} from 'antd';
+import { List, Avatar, Button, Checkbox, InputNumber, Spin, Radio} from 'antd';
 
 class PlaceList extends Component {
     constructor(){
@@ -7,14 +7,18 @@ class PlaceList extends Component {
         this.state = {
             duration: 0,
             pageNumber: 1,
+            transportation: [],
             selectedPlaces: [],
             disabledPrevious: true,
         }
     }
     
-    onChange = setting => {
+    onChangeDuration = insertValue => {
+        if(insertValue > 15) {
+            insertValue = 15;
+        }
         this.setState({
-          duration: setting.target.value,
+          duration: insertValue,
         });
     };
 
@@ -23,7 +27,7 @@ class PlaceList extends Component {
         if(isSelected) {
             list.push(selectedPlace);
         } else {
-            list = list.filter(list => list != selectedPlace);
+            list = list.filter(list => list !== selectedPlace);
         }
         console.log(list);
         this.setState ({
@@ -35,15 +39,23 @@ class PlaceList extends Component {
         this.addOrRemovePlace(setting.target.value, setting.target.checked);
     }
 
+    onChangeTransp = (checkedValue) => {
+        this.setState({
+            transportation: checkedValue,
+        })
+      }
+
     designTour = () => {
-        this.props.designTour(this.state.selectedPlaces);
+        this.props.designTour(this.state.selectedPlaces, this.state.duration, this.state.transportation);
         this.setState({
             selectedPlaces: [],
+            duration: 0,
         })
     }
 
     previousPage = () => {
-        if(this.state.pageNumber == 2) {
+        //=2是因为setstate会在之后触发，现在还没有减页数就是2，减了之后就是
+        if(this.state.pageNumber === 2) {
             this.setState({
                 disabledPrevious: true,
             })
@@ -52,28 +64,37 @@ class PlaceList extends Component {
         this.setState({
             pageNumber: this.state.pageNumber - 1,
         })
+        this.props.previousPage(this.state.pageNumber);
     }
 
     nextPage = () => {
         console.log(this.state.pageNumber);
+        this.props.nextPage(this.state.pageNumber);
         this.setState({
             pageNumber: this.state.pageNumber + 1,
             disabledPrevious: false,
         })
-        this.props.nextPage();
     }
+
     render(){
+        const cityTransp = this.props.cityInfo? this.props.cityInfo.transportation: [];
         const placeList = this.props.placeInfo ? this.props.placeInfo : [];
         return(
             <div className="place-list-box">
                 <div>
                     <label>Duration: </label>
-                    <Radio.Group onChange={this.onChange} value={this.state.duration}>
-                        <Radio value={1}>3-</Radio>
-                        <Radio value={2}>3-5</Radio>
-                        <Radio value={3}>5-7</Radio>
-                        <Radio value={4}>7+</Radio>
-                    </Radio.Group>
+                    <InputNumber
+                        min={0}
+                        max={15}
+                        defaultValue={0}
+                        style={{margin: "0 2px"}}
+                        onChange={this.onChangeDuration}
+                    />
+                    <label>days</label>
+                </div>
+                <div>
+                    <Checkbox.Group options = {cityTransp}
+                    onChange = {this.onChangeTransp}></Checkbox.Group>
                 </div>
                 <div>
                     <Button className = "design-btn"
@@ -86,7 +107,10 @@ class PlaceList extends Component {
                     dataSource={placeList}
                     renderItem={item => (
                         <List.Item
-                            actions={[<Checkbox dataInfo={item} onChange={this.onChangeBox}
+                            actions={[<Checkbox dataInfo={item} 
+                                defaultChecked = {false} 
+                                checked = {this.state.selectedPlaces.includes(item.placeId)}
+                            onChange={this.onChangeBox}
                             value = {item.placeId}/>]}
                         >
                             <List.Item.Meta

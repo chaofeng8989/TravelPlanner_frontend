@@ -7,11 +7,12 @@ class GoogleMap extends Component {
     this.state = {
       showingInfoWindow: false,  // Hides or shows the InfoWindow
       activeMarker: {},          // Shows the active marker upon click
-      selectedPlace: {name: "locationA"}          // Shows the InfoWindow to the selected place upon a marker
+      selectedPlace: {name: "locationA"},          // Shows the InfoWindow to the selected place upon a marker
+      initialCenter: {lat: 47.444, lng: -122.176},
     };
-}
+  }
 
-onMarkerClick = (props, marker, e) =>
+  onMarkerClick = (props, marker, e) =>
     this.setState({
       selectedPlace: props,
       activeMarker: marker,
@@ -27,36 +28,62 @@ onMarkerClick = (props, marker, e) =>
     }
   };
 
-    render() {
-      const mapStyles = {
-        width: "70%",
-        height: "80%",
-      };
-        return (
-            <Map
-            google={this.props.google}
-            zoom={8}
-            style={mapStyles}
-            initialCenter={{ lat: 47.444, lng: -122.176}}
-            >
-              <Marker
-                onClick={this.onMarkerClick}
-                position={{lat: 50.444, lng: -122.176}}
-                name={'Kenyatta International Convention Centre'}
-              />
-              <InfoWindow
-                marker={this.state.activeMarker}
-                visible={this.state.showingInfoWindow}
-                onClose={this.onClose}
-              >
-                <div>
-                  <h4>{this.state.selectedPlace.name}</h4>
-                </div>
-              </InfoWindow>
-            </Map>
-        );
+  onGeneratePin=(names,lats,lons)=>{
+    var res = []
+    for (var i=0; i<names.length; i++) {
+      res.push(this.onGenerateMarker(names, lats, lons, i));
+      res.push(this.onGenerateInfo());
     }
+    return res;
+  }
+
+  onGenerateMarker=(names,lats,lons,i)=>{
+    return (
+    <Marker
+          onClick={this.onMarkerClick}
+          name={names[i]}
+          position={{lat: lats[i], lng: lons[i]}}
+    />)
+  }
+  onGenerateInfo=()=>{
+    return (
+      <InfoWindow
+          marker={this.state.activeMarker}
+          visible={this.state.showingInfoWindow}
+          onClose={this.onClose}
+        >
+        <div>
+          <h4>{this.state.selectedPlace.name}</h4>
+        </div>
+      </InfoWindow>
+    )
+  }
+
+  render() {
+    const siteNameList = this.props.nameList;
+    const latList = this.props.latList;
+    const lonList = this.props.lonList;
+
+    const mapStyles = {
+      width: "80%",
+      height: "80%",
+    };
+
+    return (
+      <div>
+        <Map
+        google={this.props.google}
+        zoom={10}
+        style={mapStyles}
+        initialCenter={this.state.initialCenter}
+        >
+          {this.onGeneratePin(siteNameList,latList,lonList)}
+        </Map>
+      </div>
+    );
+  }
 }
-  export default GoogleApiWrapper({
-    apiKey: 'AIzaSyB5Aextt4PuSqpd0F0_fHMY95iTZYA5OkY'
-  })(GoogleMap);
+export default GoogleApiWrapper({
+  apiKey: 'AIzaSyB5Aextt4PuSqpd0F0_fHMY95iTZYA5OkY'
+})(GoogleMap);
+

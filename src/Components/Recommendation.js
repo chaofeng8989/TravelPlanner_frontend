@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import { Collapse, Button } from 'antd';
+import { Collapse, Select, Button, Card } from 'antd';
 import 'antd/dist/antd.css';
-//import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
-import Axios from 'axios';
-import {BASE_URL} from '../constant';
+import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css'; 
+import CityReview from './CityReview';
+import {RecommendationList} from '../TestData.js';
 import { withRouter } from "react-router-dom"
 
 const { Panel } = Collapse;
@@ -25,116 +25,117 @@ class Recommendation extends Component {
     }
 
     // jump page function
-    toOtherRoute = (url) => {
+    toOtherRoute = () => {
         const urlObj = {
-            pathname: `${url}`,
+            pathname: `/home/CityDetails`,
             state: {
-
+                cityInfo: this.props.location.state.key,
             }
         }
-        this.props.history.push(urlObj)
+        this.props.history.push(urlObj);
     }
 
-    testApi = () => {
-        const {city, state} = this.props.location.key;
-        console.log(city, state);
-        const url = `${BASE_URL}city?city=seattle,wa,usa`;
-        this.setState({
-            loading: true,
-        })
-        Axios.get(url)
-            .then(response => {
-                this.setState({
-                    tripsInfo: response.data,
-                    loading: false,
-                    selected: [],
-                })
-            })
-            .catch(error => {
-                console.log('err in fetching recomended tours ->', error);
-                this.setState({
-                    loading: false,
-                        })
-            })
+    toItinary = (idx) => {
+        const urlObj = {
+            pathname: `/home/Itinary`,
+            state: {
+                //传值这里
+            }
+        }
+        this.props.history.push(urlObj);
     }
 
-    onChangeList = (trips)=> {
-        this.setState({
-            texts: [trips.transportation[0],trips.transportation[1],trips.transportation[2]],
-            panelStatus: true,
-        })
+    onSelect = (value) => {
+        console.log("clicked");
+        this.toItinary(value);
     }
+
+    generatePanel=(trips)=>{
+        if (trips.length === 0) {
+            return (
+                    <Card size="small" title="No trip recommendation available, please refine search"  style={{ width: 300 }}>
+                        <Link to="/TripPara">
+                            <Button
+                                type="default"
+                                size="small"
+                                // onClick={this.selectPlan}
+                                >
+                                Back to Trip Setting
+                            </Button>
+                        </Link>
+                    </Card>
+                )
+        }
+        var panelList = []
+        for (var i=1; i<=trips.length; i++) {
+          panelList.push(this.createPanel(trips,i));
+        }
+        return panelList;
+      }
+  
+    createPanel=(trips,i)=>{
+        return (
+            <Panel 
+                header={trips.length >= i ? trips[i-1].title : No_Rec}
+                extra={<Popup 
+                            trigger={<button>Reviews</button>} 
+                            position="bottom"
+                            closeOnDocumentClick={true}
+                            >
+                            {trips.review?trips.review:No_Review}
+                        </Popup>}
+                // disabled={this.state.panelStatus === false}
+                >
+                <div>{this.generateTripSites(trips,i)}</div>
+                <Button
+                    type="default"
+                    size="small"
+                    onClick={()=>this.onSelect(i-1)}
+                    >
+                    Show Itinary
+                </Button>  
+            </Panel>
+        )
+      }
+    
+    generateTripSites = (trips,i)=>{
+        var text = [];
+        var eachTrip = trips[i-1].plans;
+        for (var j=0; j<eachTrip.length; j++) {
+            var eachDay = eachTrip[j].oneDayPlan;
+            text.push(`Day ${j+1} : `);
+
+            for (var k=0; k<eachDay.length; k++) {
+                if (k===0) text.push(eachDay[k].site);
+                else text.push(` -> ${eachDay[k].site}`);
+            }
+            text.push(<br/>);
+        }
+        return text;
+    }
+
 
     render() {
-        const textsList = this.state.texts;
-        function generatePanel() {
-            var panelList = []
-            for (var i=1; i<=textsList.length; i++) {
-              panelList.push(createPanel(i));
-            }
-            return panelList;
-          }
-      
-        function createPanel(i) {
-            return (
-                <Panel 
-                    header={textsList.length >= 1 ? trips.interest[1] : No_Rec}
-                    extra={<Popup 
-                                trigger={<button> Review</button>} 
-                                position="bottom"
-                                closeOnDocumentClick={true}
-                                >
-                                {No_Review}
-                            </Popup>}
-                    // disabled={this.state.panelStatus === false}
-                    >
-                    <div>{textsList[i-1]}</div>
-                    <Button
-                        type="default"
-                        size="small"
-                        onClick={this.toOtherRoute('/home/Itinary')}
-                        >
-                            Show Itinary
-                    </Button>
-                </Panel>
-            )
-          }
-
-        const trips = this.state.tripsInfo ? this.state.tripsInfo : [];
         const { expandIconPosition } = this.state.expandIconPosition;
+        const trips = RecommendationList.recommendations.length>0 ? RecommendationList.recommendations : [];
         return (
-            <div>
-                <Button
-                    onClick={this.toOtherRoute('/home/CityDetails')}
-                >
-                    Desgin your own tour
-                </Button>
-                <div className="recommendation">
-                    <Button className="testAPI"
-                        size="small"
-                        disabled={this.state.loading}
-                        onClick={()=> this.testApi()}
-                        >
-                        testApi
-                    </Button>
-                    <Button className="mount"
-                        size="small"
-                        disabled={trips.length === 0}
-                        onClick={()=> this.onChangeList(trips)}
-                        >
-                        mount list
-                    </Button>
-                    
+            <div className="recommendation">
+                <div className="cityReview">
+                    <CityReview 
+                        reviews={RecommendationList}
+                    />
+                </div>
+
+                <div className="recommendationList">
                     <>
                     <Collapse
                         defaultActiveKey={[]}
                         // onChange={callback}
                         expandIconPosition={expandIconPosition}
                     >
-                        {generatePanel()}
-                    </Collapse>
-                
-                    </>
+                        {this.generatePanel(trips)}
+                    </Collapse>  
+                </>
                 </div>
             </div>
         );

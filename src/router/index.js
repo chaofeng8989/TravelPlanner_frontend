@@ -2,7 +2,7 @@ import Home from '../App';  //app.js为主页面
 
 import MainPage from '../Components/mainpage/MainPage'; //二级路由页面
 import Itinary from '../Components/Itinary';
-import CityDetails from '../Components/CityDetails';
+import CityDetails from '../Components/CityPage/CityDetails';
 import Recommondation from '../Components/Recommendation';
 import Login from '../Components/loginPage/Login';
 

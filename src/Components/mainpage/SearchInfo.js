@@ -84,26 +84,31 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
             const { visible, onCancel, onCreate, form } = this.props;
             const { getFieldDecorator } = form;
             return (
-            <Modal
-                visible={visible}
-                title="Enter Your Interested Place"
-                okText="Go"
-                onCancel={onCancel}
-                onOk={onCreate}
-            >
-                <Form layout="vertical">
-                <Form.Item label="City Name">
-                    {getFieldDecorator('city', {
-                    rules: [{ required: true, message: 'Please input a City!' }],
-                    })(<Input />)}
-                </Form.Item>
-                <Form.Item label="State Name">
-                    {getFieldDecorator('state', {
-                    rules: [{ required: true, message: 'Please input a City!' }],
-                    })(<Input type="textarea" />)}
-                </Form.Item>
-                </Form>
-            </Modal>
+                <Modal
+                    visible={visible}
+                    title="Enter Your Interested Place"
+                    okText="Go"
+                    onCancel={onCancel}
+                    onOk={onCreate}
+                >
+                    <Form layout="vertical">
+                    <Form.Item label="City Name">
+                        {getFieldDecorator('city', {
+                        rules: [{ required: true, message: 'Please input a City!' }],
+                        })(<Input 
+                            placeholder="Enter a City (eg: Tampa)" 
+                           />)}
+                    </Form.Item>
+                    <Form.Item label="State Name">
+                        {getFieldDecorator('state', {
+                        rules: [{ required: true, message: 'Please input a City!' }],
+                        })(<Input 
+                                type="textarea" 
+                                placeholder="Enter a State (eg: FL)"
+                            />)}
+                    </Form.Item>
+                    </Form>
+                </Modal>
             );
         }
     },

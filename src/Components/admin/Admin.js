@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu } from 'antd';
 import { withRouter } from 'react-router-dom'
+import '../../styles/Admin.css'
 //import logo from '../../assets/Echarts/Satellite.svg';
 
 const { Header, Content, Footer } = Layout;
@@ -10,24 +11,19 @@ class Admin extends Component {
     go=({ item, key, keyPath, domEvent }) => {  //路由跳转路径，通过onClick设置页面path
         this.props.history.push(key);
     }
+    
 
     render() {
         return <Layout>
             <Header className="header" style={{ position:"fixed", zIndex: 1, width: '100%', height: "5%"}}>
                 <div className=""logo/>
-                <Menu theme='dark' mode="horizontal" defaultSelectedKeys={['2']}>
-                    <Menu.Item key="/home/Login" onClick={this.go} >Login</Menu.Item>
+                <Menu theme='dark' mode="horizontal" style={{float: "left"}} defaultSelectedKeys={['2']}>
                     <Menu.Item key="/home/MainPage" onClick={this.go} >MainPage</Menu.Item>
                     <Menu.Item key="/home/Recommondation" onClick={this.go}  >Recommended Trip</Menu.Item>
                     <Menu.Item key="/home/CityDetails" onClick={this.go} >Trip Details</Menu.Item>
                     <Menu.Item key="/home/Itinary" onClick={this.go} >Itinary</Menu.Item>
+                    <Menu.Item key="/home/Login" onClick={this.go} >Login</Menu.Item>
                 </Menu>
-                <div className="HeaderBreadcrumb">
-                    <Breadcrumb style={{ margin: '3px 0'}}>
-                        <Breadcrumb.Item >Login</Breadcrumb.Item>
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    </Breadcrumb>
-                </div>
             </Header>
             <Content
                 style={{

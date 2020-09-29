@@ -1,7 +1,8 @@
+//暂时不用nav
 import React, {Component} from 'react';
 import Itinary from './Itinary';
 import MainPage from './MainPage';
-import CityDetails from './CityDetails';
+import CityDetails from './CityPage/CityDetails';
 import Recommendation from './Recommendation';
 import Axios from 'axios';
 import { Layout, Menu} from 'antd';
