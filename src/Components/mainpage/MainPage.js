@@ -4,7 +4,7 @@ import SearchInfo from './SearchInfo';
 import Axios from 'axios';
 import { BACKEND_CITY_URL, SMARTY_STREETS_BASE_URL, SMARTY_STREETS_API_WEBSITE_KEY } from '../../constant';
 import { withRouter } from "react-router-dom"
-import { Modal } from 'antd';
+import {  Modal } from 'antd';
 
 class MainPage extends Component{
     // Jump to the Recommondation Page and pass searchData
@@ -16,6 +16,7 @@ class MainPage extends Component{
                 key: value,
             }
         }
+        console.log(value);
         this.props.history.push(urlObj)
     }
     
@@ -27,6 +28,7 @@ class MainPage extends Component{
             chosenPlace: undefined,
             cityData: undefined,
             searchData: undefined,
+            error: false,
         })
     }
 
@@ -77,7 +79,7 @@ class MainPage extends Component{
     sentCityData = (data) => {
         console.log(data[0]);
         Axios.post(`${BACKEND_CITY_URL}`, data[0])
-             .then(res => {
+             .then( res => {
                  console.log(res);
                  this.setState({
                     searchData: res
@@ -95,6 +97,72 @@ class MainPage extends Component{
                      searchLoading: false
                  }, () => {
                     this.turningPage(this.state.searchData.data);
+                 })
+             })
+    }
+
+    
+    // get the place entered by the customers and validate it
+    validatePlace = (value) => {
+        let value1 = value.split("  ");
+        let cityName = value1[0];
+        let stateName = value1[1];
+        console.log(cityName);
+        console.log(stateName);
+        
+        const url = `${SMARTY_STREETS_BASE_URL}?key=${SMARTY_STREETS_API_WEBSITE_KEY}&city=${cityName}&state=${stateName}`;
+        console.log(url);
+        
+        Axios.get(url)
+             .then(response => {
+                 console.log(response.data);
+                 this.setState({
+                    cityData: JSON.parse(JSON.stringify(response.data[0].city_states, ['city','state']))
+                 }, () => {
+                     this.sentCityData(this.state.cityData)
+                 })
+             })
+             .catch(error => {
+                 // input valid
+                console.log('input invalid -> ', error);
+                this.setState({
+                    searchLoading: false
+                }, this.showInvalid('You have entered a wrong place'))
+             })
+    }
+
+    // after validate, post the city info to the backend 
+    // Debug: passed
+    sentCityData = (data) => {
+        console.log(data[0]);
+        Axios.post(`${BACKEND_CITY_URL}`, data[0])
+             .then(res => {
+                 console.log(res);
+                 this.setState({
+                    searchData: res
+                 })
+             })
+             .catch( e => {
+                console.log('err in getting data back-> ', e.message);
+                this.setState({
+                    searchLoading: false,
+                    error: true
+                }, this.showInvalid('We do not found Places Around'))
+             })
+             .finally( () => {
+                 this.setState({
+                     // stop loading
+                     searchLoading: false
+                 }, () => {
+                    if (this.state.error) {
+                        this.setState({
+                            error: false
+                        }, () => {
+                            this.props.history.push('/home/MainPage')
+                        })
+                    } else {
+                        this.turningPage(this.state.searchData.data);
+                    }
                  })
              })
     }

@@ -18,8 +18,8 @@ export const SMARTY_STREETS_API_SECRET_TOKEN = "BukzgyZEDqkzz0fOesvo";
 // get back-end city info from mainpage
 export const BACKEND_CITY_URL = "https://travelplannerbackend.azurewebsites.net/city";
 
-export const BACKEND_LOGIN_URL = "http://localhost:8080/login";
+export const BACKEND_FORM_LOGIN_URL = `${BASE_URL}/login`;
 
-export const BACKEND_REGISTER_URL = "http://localhost:8080/register";
+export const BACKEND_FORM_REGISTER_URL = `${BASE_URL}/register`;
 
-export const BACKEND_THIRD_LOGIN_URL = " http://localhost:8080/oauth2/authorization";
+export const BACKEND_THIRD_LOGIN_URL = `${BASE_URL}/oauth2/authorization`;

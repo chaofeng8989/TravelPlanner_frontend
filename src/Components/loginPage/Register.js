@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { Button, Icon, Modal, Form, Input, Tooltip, Select, AutoComplete } from 'antd';
 import '../../styles/Register.css';
 import Axios from 'axios';
-import { BACKEND_REGISTER_URL } from '../../constant'
+import { BACKEND_FORM_REGISTER_URL } from '../../constant'
 
 class Register extends Component {
     
@@ -119,14 +119,27 @@ const RegisterForm = Form.create()(
         state = {
             confirmDirty: false,
             autoCompleteResult: [],
+            loading: false,
         };
 
         showSucess = (res) => {
             let secondsToGo = 2;
             const modal = Modal.success({
-              title: 'Successful register!',
-              //title: 'Successful register! You username is '+`${res.username}`,
+              title: 'Successful register! You username is '+`${res.username}`,
               content: 'go back and log in!',
+            });
+            setTimeout(() => {
+              modal.destroy();
+              this.props.onClose();
+            }, secondsToGo * 1000);
+        }
+
+        showFailure = (res) => {
+            let secondsToGo = 2;
+            const modal = Modal.success({
+              title: 'Failure register! Username ' + `${res}`+' is already existed.',
+              //title: 'Successful register! You username is '+`${res.username}`,
+              content: 'Change Your Username and Try Again!',
             });
             setTimeout(() => {
               modal.destroy();
@@ -136,19 +149,23 @@ const RegisterForm = Form.create()(
         
         handleSubmit = e => {
             e.preventDefault();
+            const url = `${BACKEND_FORM_REGISTER_URL}`
+            this.setState({loading: true})
             this.props.form.validateFieldsAndScroll((err, values) => {
                 if (!err) {
                     console.log('Received values of form: ', values);
-                    this.showSucess();
-                    /*
-                    Axios.post(`${BACKEND_REGISTER_URL}`, values)
-                        .then( res => {
-                            this.showStatus(res)
+                    console.log(url)
+                    Axios.post(url, values)
+                        .then( (values, res) => {
+                            this.showStatus(values.username)
                         })
                         .catch( e => {
                             console.log('err in getting data back-> ', e.message);
+                            if (e.message === 'Request failed with status code 400') {
+                                this.showStatus(values.username)
+                            }
                         })
-                        */
+                        .finally(this.setState({loading: false}))
                 }
             });
         };
@@ -228,7 +245,7 @@ const RegisterForm = Form.create()(
             return (
                 <Form className="register-form" {...formItemLayout} onSubmit={this.handleSubmit}>
                     <Form.Item label="Username">
-                        {getFieldDecorator('Username', {
+                        {getFieldDecorator('username', {
                             rules: [
                                 {
                                     required: true,
@@ -265,7 +282,7 @@ const RegisterForm = Form.create()(
                     </Form.Item>
                     <Form.Item label="Phone Number">
                         {getFieldDecorator('phone', {
-                            rules: [{ required: true, message: 'Please input your phone number!' }],
+                            rules: [{ required: false, message: 'Please input your phone number!' }],
                         })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
                     </Form.Item>
                     <Form.Item label="Email">
@@ -300,7 +317,7 @@ const RegisterForm = Form.create()(
                             />)}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" onClick={this.handleSubmit} >
+                        <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading} >
                             Register Now
                         </Button>
                     </Form.Item> 

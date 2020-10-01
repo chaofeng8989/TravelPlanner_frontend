@@ -47,10 +47,12 @@ class PlaceList extends Component {
 
     designTour = () => {
         this.props.designTour(this.state.selectedPlaces, this.state.duration, this.state.transportation);
-        this.setState({
-            selectedPlaces: [],
-            duration: 0,
-        })
+        if(this.props.successDesign) {
+            this.setState({
+                selectedPlaces: [],
+                duration: 0,
+            })
+        }
     }
 
     previousPage = () => {
@@ -60,7 +62,6 @@ class PlaceList extends Component {
                 disabledPrevious: true,
             })
         }
-        console.log(this.state.pageNumber);
         this.setState({
             pageNumber: this.state.pageNumber - 1,
         })
@@ -68,7 +69,6 @@ class PlaceList extends Component {
     }
 
     nextPage = () => {
-        console.log(this.state.pageNumber);
         this.props.nextPage(this.state.pageNumber);
         this.setState({
             pageNumber: this.state.pageNumber + 1,

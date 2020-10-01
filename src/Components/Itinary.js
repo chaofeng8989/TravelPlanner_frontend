@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import GoogleMap from './GoogleMap';
 import {RecommendationList} from '../TestData.js';
+import {GENERATE_TOUR}  from '../constant';
+import Axios from 'axios';
+import ItinaryList from './ItinaryList';
 import {InputNumber,Button} from 'antd';
 
 export default class Itinary extends Component{
@@ -11,7 +14,28 @@ export default class Itinary extends Component{
             Sites: [],
             Lats: [],
             Lons: [],
+            tourInfo:undefined,
+            tourDuration:undefined,
         };
+    }
+
+    findTourInfo = () =>{
+        console.log(this.props.location.state.tourInfo);
+        const url = `${GENERATE_TOUR}`;
+        Axios.post(url, {
+            "placeIdSet" : ["ChIJaYxSWbJqkFQRIx56JsKqNCA", "ChIJr35lOAQVkFQRsyYe3IVRQ_c","ChIJSxh5JbJqkFQRxI1KoO7oZHs"],
+            "duration" : 2,
+            "travelType": "transit"
+        })
+          .then(response => {
+              console.log(response);
+            this.setState({                
+              tourInfo: response.data.day,
+              tourDuration: response.data.duration
+            })
+            
+          })
+
     }
 
     onShowSites=(selectedTrip,idx) => {
@@ -62,8 +86,14 @@ export default class Itinary extends Component{
                                 >
                                 Show sites!
                             </Button>
+                            
                     </div>
-                    Left Panel
+                    <Button className="search-place-btn"
+                        onClick = {this.findTourInfo}>Show Itinary</Button>
+                        
+                    <ItinaryList  tourInfo = {this.state.tourInfo}
+                    tourDuration = {this.state.Duration}
+                    />
                     
                 </div>
 

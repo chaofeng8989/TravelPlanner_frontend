@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { Button, Icon, Form, Checkbox, Input, Modal, Drawer } from 'antd';
 import '../../styles/Login.css';
 import Axios from 'axios';
-import { BACKEND_LOGIN_URL, BACKEND_THIRD_LOGIN_URL } from '../../constant';
+import { BACKEND_FORM_LOGIN_URL, BACKEND_THIRD_LOGIN_URL } from '../../constant';
 import Register from './Register';
 
 class Login extends Component {
@@ -66,15 +66,26 @@ class Login extends Component {
 const LoginForm = Form.create({ name: 'form_in_modal' })(
     // eslint-disable-next-line
     class extends React.Component {
+        constructor() {
+            super();
+            this.state = ({
+                loading: false,
+            })
+        }
+        
         thirdPlacelogin = (msg) => {
             const url = `${BACKEND_THIRD_LOGIN_URL}/${msg}`
+            console.log(url)
             Axios.get(url)
                 .then(res => {
-                    this.showStatus('Login Success', 'We wil go to the MainPage', true)
+                    console.log(res)
+                    //this.showStatus('Login Success', 'We wil go to the MainPage', true)
+                }).catch( e => {
+                    console.log('err in getting data back-> ', e.message);
                 })
         }
         
-        showStatus = (status, msg, loged) => {
+        showStatus = (status, msg, loged, username) => {
             let secondsToGo = 2;
             const modal = Modal.success({
               title: `${status}`,
@@ -83,7 +94,8 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
             setTimeout(() => {
               modal.destroy();
               if ( loged ) {
-                  this.props.toOtherRoute('/home/MainPage')
+                //this.props.sendUserName(username);
+                  this.props.toOtherRoute('/home/MainPage');
               }
             }, secondsToGo * 1000);
         }
@@ -92,20 +104,36 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
             e.preventDefault();
             this.props.form.validateFields((err, values) => {
                 if ( !err ) {
-                    console.log(values);
-                    this.showStatus('Login Success', 'We wil go to the MainPage', true)
-                    // send the JSON to backend and validate
-                    // initially set the backend will send the login status as res if login successful
-                    /* the form-login
-                    Axios.post(`${BACKEND_LOGIN_URL}`, values)
-                        .then(res => {
-                            this.showStatus('Login Success', 'We wil go to the MainPage', true)
+                    this.setState({
+                        loading: true
+                    }, () => {
+                        console.log(values);
+                        // formData is kind like queue, we need to use formData.get/append
+                        // to see the data inside
+                        let formData = new FormData();
+                        const url = `${BACKEND_FORM_LOGIN_URL}`;
+                        formData.append('username', values.usernam);
+                        formData.append('password', values.password);
+                        // send the formData to backend and validate
+                        // set the header of post
+                        Axios({
+                            method:'post',
+                            url:url,
+                            data:formData,
+                            headers: {'Content-Type': 'multipart/form-data'}
                         })
-                        .catch( e => {
-                            console.log('err in getting data back-> ', e.message);
-                            this.showStatus('Login Failed', 'You have entered wrong username or password!', false);
-                        })
-                    */
+                            .then(res => {
+                                console.log(res)
+                                this.showStatus('Login Success', 'We wil go to the MainPage', true, values.username)
+                            })
+                            .catch( e => {
+                                console.log('err in getting data back-> ', e.message);
+                                this.showStatus('Login Failed', 'You have entered wrong username or password!', false);
+                            })
+                            .finally(
+                                this.setState({loading: false})
+                            )
+                    })
                 }
             });
         }
@@ -150,7 +178,7 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
                             <IconFont type="icon-github" style={{fontSize: '20px'}} onClick={() => this.thirdPlacelogin('github')} />
                         </div>
                     </Form.Item>
-                    <Button type="primary" htmlType="submit" className="login-form-button" >
+                    <Button type="primary" htmlType="submit" className="login-form-button" loading={this.state.loading} >
                         Log in
                     </Button>
                     Or <a onClick={() => showDrawer()}>register now!</a>

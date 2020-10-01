@@ -32,6 +32,7 @@ class Recommendation extends Component {
                 cityInfo: this.props.location.state.key,
             }
         }
+        console.log(this.props.location.state.key);
         this.props.history.push(urlObj);
     }
 
@@ -120,6 +121,9 @@ class Recommendation extends Component {
         const trips = RecommendationList.recommendations.length>0 ? RecommendationList.recommendations : [];
         return (
             <div className="recommendation">
+                <Button onClick = {this.toOtherRoute}>
+                    Design your own tour
+                </Button>
                 <div className="cityReview">
                     <CityReview 
                         reviews={RecommendationList}

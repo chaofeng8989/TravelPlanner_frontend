@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Avatar } from 'antd';
 import { withRouter } from 'react-router-dom'
 import '../../styles/Admin.css'
 //import logo from '../../assets/Echarts/Satellite.svg';
@@ -11,19 +11,34 @@ class Admin extends Component {
     go=({ item, key, keyPath, domEvent }) => {  //路由跳转路径，通过onClick设置页面path
         this.props.history.push(key);
     }
-    
+
+    constructor() {
+        super();
+        this.state = ({
+            username : undefined,
+        })
+    }
+
+    getUserName = (value) => {
+        this.setState({
+            username: value
+        })
+    }
 
     render() {
         return <Layout>
             <Header className="header" style={{ position:"fixed", zIndex: 1, width: '100%', height: "5%"}}>
                 <div className=""logo/>
-                <Menu theme='dark' mode="horizontal" style={{float: "left"}} defaultSelectedKeys={['2']}>
+                <Menu theme='dark' mode="horizontal" style={{float: "left"}} selectedKeys={[this.props.history.location.pathname]} >
                     <Menu.Item key="/home/MainPage" onClick={this.go} >MainPage</Menu.Item>
                     <Menu.Item key="/home/Recommondation" onClick={this.go}  >Recommended Trip</Menu.Item>
                     <Menu.Item key="/home/CityDetails" onClick={this.go} >Trip Details</Menu.Item>
                     <Menu.Item key="/home/Itinary" onClick={this.go} >Itinary</Menu.Item>
                     <Menu.Item key="/home/Login" onClick={this.go} >Login</Menu.Item>
                 </Menu>
+                <Avatar  style={{ float: 'right', backgroundColor: '#333C4D' }} icon="user" size="large" onClick={() => console.log(123)} />
+                <a disabled ="true" style={{float: 'right', color: '#CCC', paddingRight: '20px'}}>Traveler </a>
+                <a disabled ="true" style={{float: 'right', color: '#CCC', paddingRight: '10px'}}>Welcome! </a>    
             </Header>
             <Content
                 style={{
