@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import GoogleMap from './GoogleMap';
-import {RecommendationList} from '../TestData.js';
+import {trips, transportation} from '../TestData.js'; 
 import {GENERATE_TOUR}  from '../constant';
 import Axios from 'axios';
 import ItinaryList from './ItinaryList';
 import {InputNumber,Button} from 'antd';
+import TestMap from './TestMap';
+
 
 export default class Itinary extends Component{
     constructor(){
@@ -37,7 +39,7 @@ export default class Itinary extends Component{
           })
 
     }
-
+    
     onShowSites=(selectedTrip,idx) => {
         var dailyPlan=selectedTrip.length != 0 ? selectedTrip[idx-1].oneDayPlan:[];
         var siteNames=[];
@@ -62,17 +64,36 @@ export default class Itinary extends Component{
         this.setState({activeDay:value});
     }
 
+    generatePlaces = (p)=> {
+        var ID = []            //[[ID1,ID2,ID3],[ID1,ID2,ID3],[ID1,ID2,ID3]]
+        var Time = []
+        for (var i=0; i<p.length; i++) {
+            var dailyPlan = p[i];
+            var dailyPlaces = dailyPlan.simplePlaces;
+            var dailyTime = dailyPlan.time;
+            Time.push(dailyTime);
+            var dailyPlaceID = [];
+            for (var j=0; j<dailyPlaces.length;j++) {
+                dailyPlaceID.push(dailyPlaces[j].placeId);
+            }
+            ID.push(dailyPlaceID);
+        }
+        this.state.placeId = ID;
+        this.state.time = Time;
+    }
+
     render() {
-        const tripIdx = this.props.selectedTripIdx>=0?this.props.selectedTripIdx:null;
-        const selectedTrip = tripIdx!=null ?RecommendationList.recommendations[tripIdx].plans : [];
+        const tripIdx = this.props.location.state.selectedTripIdx>=0?this.props.location.state.selectedTripIdx:null;
+        const selectedTrip = tripIdx!=null ?trips[tripIdx].day : this.props.location.state.tourInfo.day;
+        this.generatePlaces(selectedTrip);
         return (
             <div className="Itinary">
                 <div className="ItemDisplayTable">
                     <div className="Date-selection">
                             <label>Select Day: </label>
                             <InputNumber
-                                min={selectedTrip.length != 0 ? 1 : 0}
-                                max={selectedTrip.length != 0 ? selectedTrip.length : 0}
+                                min={selectedTrip.length != 0 ? 1 : 1}
+                                max={selectedTrip.length != 0 ? selectedTrip.length : 1}
                                 defaultValue={1}
                                 style={{margin: "0 2px"}}
                                 onChange={this.onChangeActiveDay}
@@ -98,12 +119,16 @@ export default class Itinary extends Component{
                 </div>
 
                 <div className="GoogleMap">
-                    <p> selected trip plan: {selectedTrip.length != 0 ? RecommendationList.recommendations[tripIdx].title:"No trip selected"} </p>
-
-                    <GoogleMap 
+                    {/* <GoogleMap 
                         nameList={this.state.Sites}
                         lonList={this.state.Lons}
                         latList={this.state.Lats}
+                        mapCenter={{lat:this.state.Lats[0],lng:this.state.Lons[0]}}
+                    /> */}
+
+                    <TestMap 
+                        placeId={this.state.placeId.length>0?this.state.placeId[this.state.activeDay-1]:[]}
+                        transport={transportation}
                     />
                 </div>
             </div>

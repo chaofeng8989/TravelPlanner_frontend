@@ -6,13 +6,23 @@ import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
 import 'echarts/lib/component/toolbox';
+import { Card, Modal } from 'antd';
+import LApic from '../../assets/picture/LApic.png';
+import SApic from '../../assets/picture/SApic.png';
+import TMpic from '../../assets/picture/TMpic.png';
 
 
+const { Meta } = Card;
 class LoadMap extends React.Component {
     constructor() {
         super();
         this.state = {
             chosen: undefined,
+            cityname: undefined,
+            statename: undefined,
+            visible: false,
+            imgUrl: undefined,
+            description: undefined,
         }
     }
 
@@ -48,7 +58,11 @@ class LoadMap extends React.Component {
         let option = {
             title: {
                 text: 'Select A Recommended Area You Are Interested',
-                left: 'center'
+                left: 'center',
+                textStyle : {
+                    color: '#FFF'
+                },
+                top: '10'
             },
             // 热力图（未显示）
             visualMap: {
@@ -57,6 +71,11 @@ class LoadMap extends React.Component {
                 max: 3000,
                 color: ['orangered','yellow','lightskyblue'],
                 text:['Liked',''],           // 文本，默认为数值文本
+                textStyle : {
+                    color: '#FFF'
+                },
+                itemWidth: '30',
+                itemHeight: '160',
                 show: true //热力图的映射条
             },
             //鼠标悬浮信息栏
@@ -90,12 +109,12 @@ class LoadMap extends React.Component {
                 {
                     name: 'Recommended For',
                     type: 'map',
-                    roam: true, //鼠标缩放
+                    roam: 'move', // 地图缩放scale 移动scale 均开启true
                     map: 'USA',
                     zoom: 1.5,
                     itemStyle:{
-                        opacity: 0.8,
-                        areaColor:'rgb(128,128,128,0.2)',
+                        opacity: 0.9,
+                        areaColor:'rgb(128,128,128,0.5)',
                         emphasis:{
                             label:{
                                 show:true,
@@ -167,20 +186,58 @@ class LoadMap extends React.Component {
             ]
         };
     
+        // load the Map
         myChart.setOption(option);
-        myChart.on('click', {seriesIndex: 0, name: 'Florida'}, () => {
+
+        // set the description Cart for each recommond city
+        // California
+        myChart.on('click', {seriesIndex: 0, name: 'California'}, () => {
+           this.setState({
+               visible: true,
+               cityname: 'Los Angeles',
+               statename: 'California',
+               chosen: 'Los Angeles  CA',
+               imgUrl: LApic,
+               description: 'Description for Los Angeles',
+           })
+        })
+
+        // Texas
+        myChart.on('click', {seriesIndex: 0, name: 'Texas'}, () => {
             this.setState({
-                chosen: 'Tampa  FL'
-            }, () => {
-                this.updatePlace(this.state.chosen)
+                visible: true,
+                cityname: 'San Antonio',
+                statename: 'Texas',
+                chosen: 'San Antonio  TX',
+                imgUrl: SApic,
+                description: 'Description for San Antonio',
             })
         })
-        myChart.on('click', {seriesIndex: 0, name: 'California'}, () => {
+
+        // Florida
+        myChart.on('click', {seriesIndex: 0, name: 'Florida'}, () => {
             this.setState({
-                chosen: 'Los Angeles  CA'
-            }, () => {
-                this.updatePlace(this.state.chosen)
+                visible: true,
+                cityname: 'Tampa',
+                statename: 'Florida',
+                chosen: 'Tampa  FL',
+                imgUrl: TMpic,
+                description: 'Description for Tampa',
             })
+        })
+    }
+
+    onCancel = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    onCreate = () => {
+        this.setState({
+            visible: false
+        }, () => {
+            this.updatePlace(this.state.chosen)
         })
     }
     
@@ -189,14 +246,29 @@ class LoadMap extends React.Component {
         return (
             <div id="map" style={
                 { 
-                    width: 1840, 
-                    height: 650, 
-                    marginTop: 30, 
-                    
-                    
+                    width: 1920, 
+                    height: 770, 
+                    marginTop: 32, 
                 }
             }
-            ></div>
+            >
+                <Modal
+                    title={"Recommend For "+ `${this.state.statename}` + ' : ' + `${this.state.cityname}`} 
+                    okText="Go"
+                    visible={this.state.visible}
+                    onCancel={this.onCancel}
+                    onOk={this.onCreate}
+                >
+                    <Card
+                        hoverable
+                        style={{ width: 340, marginLeft: '13%' }}
+                        cover={<img alt="example" src={`${this.state.imgUrl}`} />}
+                    >
+                        <Meta title={`${this.state.cityname}`} description={`${this.state.description}`} />
+                    </Card>
+                </Modal>
+            </div>
+            
         );
     }
 }

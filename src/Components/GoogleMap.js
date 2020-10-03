@@ -1,5 +1,7 @@
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
+/*global google*/
+import {Map, InfoWindow, Marker, GoogleApiWrapper, DirectionsRenderer} from 'google-maps-react';
 import React, {Component} from 'react';
+import MapDirectionsRenderer from './MapDirectionsRenderer';
 
 class GoogleMap extends Component {
   constructor(){
@@ -40,10 +42,12 @@ class GoogleMap extends Component {
   onGenerateMarker=(names,lats,lons,i)=>{
     return (
     <Marker
+          id={i}
           onClick={this.onMarkerClick}
           name={names[i]}
           position={{lat: lats[i], lng: lons[i]}}
-    />)
+    >
+    </Marker>)
   }
   onGenerateInfo=()=>{
     return (
@@ -63,6 +67,13 @@ class GoogleMap extends Component {
     const siteNameList = this.props.nameList;
     const latList = this.props.latList;
     const lonList = this.props.lonList;
+    const mapCenter = latList.length>0?this.props.mapCenter:this.state.initialCenter;
+
+    const places = [
+      {lat: 25.8103146,lng: -80.1751609},
+      {lat: 27.9947147,lng: -82.5943645},
+      {lat: 28.4813018,lng: -81.4387899},
+    ]
 
     const mapStyles = {
       width: "80%",
@@ -75,9 +86,20 @@ class GoogleMap extends Component {
         google={this.props.google}
         zoom={10}
         style={mapStyles}
-        initialCenter={this.state.initialCenter}
+        initialCenter = {this.state.initialCenter}
+        center={mapCenter}
         >
           {this.onGeneratePin(siteNameList,latList,lonList)}
+          {/* <MapDirectionsRenderer places={places} travelMode={window.google.maps.TravelMode.DRIVING} /> */}
+
+          {/* <Polyline
+            path={places}
+            geodesic= {true}
+            strokeColor= '#FF0000'
+            strokeOpacity= {1.0}
+            strokeWeight= {2}
+          /> */}
+
         </Map>
       </div>
     );

@@ -5,13 +5,13 @@ import '../../styles/Login.css';
 import Axios from 'axios';
 import { BACKEND_FORM_LOGIN_URL, BACKEND_THIRD_LOGIN_URL } from '../../constant';
 import Register from './Register';
+import bg from '../../assets/picture/loginbg.png';
 
 class Login extends Component {
     
     constructor() {
         super();
         this.state = {
-            isFullScreen: true,
             visible: false,
         }
     }
@@ -23,7 +23,7 @@ class Login extends Component {
     }
 
     onClose = () => {
-        this.setState({
+        this.setState({ 
             visible: false,
         })
     }
@@ -36,7 +36,12 @@ class Login extends Component {
         const urlObj = {
             pathname: `${url}`,
         }
-        this.props.history.push(urlObj)
+        console.log(urlObj)
+        this.props.sendPath(urlObj)
+    }
+
+    test = () => {
+        this.props.test()
     }
 
     render() {
@@ -46,12 +51,16 @@ class Login extends Component {
                     wrappedComponentRef={this.saveFormRef}
                     showDrawer={this.showDrawer}
                     toOtherRoute={this.toOtherRoute}
+                    test={this.test}
                 />
                 <Drawer
                     title="Create a new account"
                     width={720}
                     onClose={this.onClose}
+                    //visible={this.state.visible}
                     visible={this.state.visible}
+                    drawerStyle={{backgroundColor: 'rgba(0,0,0,0.01)'}}
+                    headerStyle={{backgroundColor: 'rgba(0,0,0,0.01)'}}
                     bodyStyle={{ paddingBottom: 80 }}
                 >
                     <Register 
@@ -73,6 +82,7 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
             })
         }
         
+        // TODO: Waiting for backend test
         thirdPlacelogin = (msg) => {
             const url = `${BACKEND_THIRD_LOGIN_URL}/${msg}`
             console.log(url)
@@ -85,7 +95,7 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
                 })
         }
         
-        showStatus = (status, msg, loged, username) => {
+        showStatus = (status, msg, loged) => {
             let secondsToGo = 2;
             const modal = Modal.success({
               title: `${status}`,
@@ -94,9 +104,10 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
             setTimeout(() => {
               modal.destroy();
               if ( loged ) {
-                //this.props.sendUserName(username);
+                  //this.props.sendUserName(username);
                   this.props.toOtherRoute('/home/MainPage');
               }
+              this.setState({loading: false})
             }, secondsToGo * 1000);
         }
         
@@ -130,9 +141,6 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
                                 console.log('err in getting data back-> ', e.message);
                                 this.showStatus('Login Failed', 'You have entered wrong username or password!', false);
                             })
-                            .finally(
-                                this.setState({loading: false})
-                            )
                     })
                 }
             });
@@ -142,50 +150,105 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
             const IconFont = Icon.createFromIconfontCN({
                 scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
             })
-            const { form, showDrawer } = this.props;
+            const { form, showDrawer, test } = this.props;
             const { getFieldDecorator } = form;
             return (
-                <Form onSubmit={this.handleSubmit} className="login-form">
-                    <Form.Item>
-                        {getFieldDecorator('username', {
-                            rules: [{ required: true, message: 'Please input your username'}],
-                        }) (
-                            <Input 
-                                prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, 0.25'}} />}
-                                placeholder="Username"
-                            />,
-                        )}
-                    </Form.Item>
-                    <Form.Item>
-                        {getFieldDecorator('password', {
-                            rules: [{ required: true, message: 'Please input your password'}],
-                        }) (
-                            <Input 
-                                prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, 0.25'}} />}
-                                type="password"
-                                placeholder="Password"
-                            />,
-                        )}  
-                    </Form.Item>
-                    <Form.Item>
-                        {getFieldDecorator('remember', {
-                            valuePropName: 'checked',
-                            initialValue: true,
-                        }) (<Checkbox className="login-remember">Remember me</Checkbox>)}
-                        <div className="icons-list">
-                            <a>Log in with: </a>
-                            <IconFont type="icon-facebook" style={{padding: '5px', fontSize: '20px'}} onClick={() => this.thirdPlacelogin('facebook')} />
-                            <IconFont type="icon-github" style={{fontSize: '20px'}} onClick={() => this.thirdPlacelogin('github')} />
-                        </div>
-                    </Form.Item>
-                    <Button type="primary" htmlType="submit" className="login-form-button" loading={this.state.loading} >
-                        Log in
-                    </Button>
-                    Or <a onClick={() => showDrawer()}>register now!</a>
-                </Form>
+                <div id='loginbox' style={styles.loginbox}>
+                    <div id='backgroundBox' style={styles.backgroundBox} ></div>
+                    <div id='title1' style={styles.title1} >
+                        Start Your Journey 
+                    </div>
+                    <div id='title2' style={styles.title2} >
+                        From Here
+                    </div>
+                    <div id='container' style={styles.container} >
+                        <Form onSubmit={this.handleSubmit} className="login-form">
+                            <Form.Item>
+                                {getFieldDecorator('username', {
+                                    rules: [{ required: true, message: 'Please input your username'}],
+                                }) (
+                                    <Input 
+                                        prefix={<Icon type="user" style={{ color: 'rgba(0, 0, 0, 0.25'}} />}
+                                        placeholder="Username"
+                                    />,
+                                )}
+                            </Form.Item>
+                            <Form.Item>
+                                {getFieldDecorator('password', {
+                                    rules: [{ required: true, message: 'Please input your password'}],
+                                }) (
+                                    <Input 
+                                        prefix={<Icon type="lock" style={{ color: 'rgba(0, 0, 0, 0.25'}} />}
+                                        type="password"
+                                        placeholder="Password"
+                                    />,
+                                )}  
+                            </Form.Item>
+                            <Form.Item>
+                                {getFieldDecorator('remember', {
+                                    valuePropName: 'checked',
+                                    initialValue: true,
+                                }) (<Checkbox style={{color: '#DDD'}} className="login-remember">Remember me</Checkbox>)}
+                                <div className="icons-list">
+                                    <a style={{color: '#3399FF'}}>Log in with: </a>
+                                    <IconFont type="icon-facebook" style={{color: '#DDD', padding: '5px', fontSize: '20px'}} onClick={() => this.thirdPlacelogin('facebook')} />
+                                    <IconFont type="icon-github" style={{color: '#DDD', fontSize: '20px'}} onClick={() => this.thirdPlacelogin('github')} />
+                                </div>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button  htmlType="submit" className="login-form-button" loading={this.state.loading} ghost fontSize="large">
+                                    Log in
+                                </Button>
+                                <a style={{color: '#DDD'}} onClick={() => showDrawer()}>Or register now!</a>
+                                <a style={{color: '#DDD', paddingLeft: '10px'}} onClick={() => test()}>test</a>
+                            </Form.Item>
+                        </Form>
+                    </div>
+                </div>
             );
         }
     },
 );
+
+const styles = {
+    loginbox: {
+        display: 'flex',
+    },
+    backgroundBox: {
+        zIndex: '0',
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        backgroundImage: 'url(' + bg + ')',
+        backgroundSize: '100%, 100%',
+    },
+    title1: {
+        fontFamily: "kaushan_scriptregular",
+        fontSize: '400%',
+        color: '#CCC',
+        zIndex: '1',
+        position: 'fixed',
+        marginTop: '10%',
+        left: '21%',
+        width: '1000px',
+        height: '100px',
+    },
+    title2: {
+        fontFamily: "kaushan_scriptregular",
+        fontSize: '400%',
+        color: '#CCC',
+        zIndex: '1',
+        position: 'fixed',
+        marginTop: '15%',
+        left: '34%',
+        width: '1000px',
+        height: '100px',
+    },
+    container: {
+        marginTop: '430px',
+    }
+}
 
 export default withRouter(Login);

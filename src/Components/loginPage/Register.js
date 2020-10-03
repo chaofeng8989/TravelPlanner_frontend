@@ -114,7 +114,6 @@ class Reference extends React.Component {
 }
 
 const RegisterForm = Form.create()(
-    
     class extends React.Component {
         state = {
             confirmDirty: false,
@@ -122,7 +121,7 @@ const RegisterForm = Form.create()(
             loading: false,
         };
 
-        showSucess = (res) => {
+        showSuccess = (res) => {
             let secondsToGo = 2;
             const modal = Modal.success({
               title: 'Successful register! You username is '+`${res.username}`,
@@ -157,12 +156,12 @@ const RegisterForm = Form.create()(
                     console.log(url)
                     Axios.post(url, values)
                         .then( (values, res) => {
-                            this.showStatus(values.username)
+                            this.showSuccess(values.username)
                         })
                         .catch( e => {
                             console.log('err in getting data back-> ', e.message);
                             if (e.message === 'Request failed with status code 400') {
-                                this.showStatus(values.username)
+                                this.showFailure(values.username)
                             }
                         })
                         .finally(this.setState({loading: false}))

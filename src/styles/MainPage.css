@@ -1,24 +1,3 @@
-.login-form {
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.login-remember {
-    float: left;
-}
-
-.login-form-forgot {
-    float: right;
-}
-
-.login-form-button {
-    width: 100%;
-}
-
-.icons-list {
-    float: right;
-}
-
 @font-face {
     font-family: 'kaushan_scriptregular';
     src: url('../assets/Fonts/kaushanscript-regular-webfont.eot');

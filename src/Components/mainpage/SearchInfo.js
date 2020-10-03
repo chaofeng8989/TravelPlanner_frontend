@@ -59,8 +59,13 @@ class SearchInfo extends Component {
 
     render() {
         return(
-            <div className="search-box" >
-                <Button type="primary" onClick={this.showModal} loading={this.props.loading} >
+            <div className="search-box" style={{paddingTop: 82}}>
+                <Button 
+                    onClick={this.showModal} 
+                    loading={this.props.loading} 
+                    size="large"
+                    ghost
+                >
                     Start Your Journey
                 </Button>
                 <CollectionCreateForm
@@ -91,21 +96,21 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                     onOk={onCreate}
                 >
                     <Form layout="vertical">
-                    <Form.Item label="City Name">
-                        {getFieldDecorator('city', {
-                        rules: [{ required: true, message: 'Please input a City!' }],
-                        })(<Input 
-                            placeholder="Enter a City (eg: Tampa)" 
-                           />)}
-                    </Form.Item>
-                    <Form.Item label="State Name">
-                        {getFieldDecorator('state', {
-                        rules: [{ required: true, message: 'Please input a City!' }],
-                        })(<Input 
-                                type="textarea" 
-                                placeholder="Enter a State (eg: FL)"
+                        <Form.Item label="City Name">
+                            {getFieldDecorator('city', {
+                            rules: [{ required: true, message: 'Please input a City!' }],
+                            })(<Input 
+                                placeholder="Enter a City (eg: Tampa)" 
                             />)}
-                    </Form.Item>
+                        </Form.Item>
+                        <Form.Item label="State Name">
+                            {getFieldDecorator('state', {
+                            rules: [{ required: true, message: 'Please input a City!' }],
+                            })(<Input 
+                                    type="textarea" 
+                                    placeholder="Enter a State (eg: FL)"
+                                />)}
+                        </Form.Item>
                     </Form>
                 </Modal>
             );

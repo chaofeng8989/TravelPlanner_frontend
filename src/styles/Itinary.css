@@ -1,9 +1,10 @@
 .Itinary{
     display: flex;
+    margin-top: 100px;
 }
 
 .ItemDisplayTable{
-    position: absolute;
+    position: relative;
     padding: 10pt;
     height: 800px;
     width: 500px;

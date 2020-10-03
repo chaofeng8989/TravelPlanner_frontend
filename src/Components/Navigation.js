@@ -21,24 +21,6 @@ class Navigation extends Component{
     }
   }
 
-  desginTour = (tour) => {
-    this.setState({
-      tourInfo: tour,
-    })
-  }
-
-  showCity = (cityName) => {
-    const url = `${GET_CITY}${cityName}`;
-    Axios.get(url)
-      .then(response => {
-        this.setState({
-          cityInfo: response.data,
-          cityAddress: cityName,
-        })
-        console.log(this.state);
-      })
-  }
-
   
   render() {
   return (
