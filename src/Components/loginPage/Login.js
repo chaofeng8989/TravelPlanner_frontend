@@ -123,7 +123,7 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
                         // to see the data inside
                         let formData = new FormData();
                         const url = `${BACKEND_FORM_LOGIN_URL}`;
-                        formData.append('username', values.usernam);
+                        formData.append('username', values.username);
                         formData.append('password', values.password);
                         // send the formData to backend and validate
                         // set the header of post
