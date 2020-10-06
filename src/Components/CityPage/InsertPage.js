@@ -25,14 +25,17 @@ class InsertPage extends Component {
         const cityInterest = this.props.cityInfo? this.props.cityInfo.interest: [];
  
         return(   
-            <div> 
-                <div className="insert-box">
-                <label>Interest: </label>
-                <Checkbox.Group options = {cityInterest}
+            <div className="insert-box"> 
+                <div className='interest'>Please Select Your Interest</div>
+                <div >
+                <Checkbox.Group className="options"
+                 options = {cityInterest}
                     onChange = {this.onChangeInterest}></Checkbox.Group>
                 </div>
+                <div className="buttonSearch">
                 <Button className="search-place-btn"
                 onClick = {this.searchPlace}>Search Places</Button>
+                </div>
             </div>
         );
     }

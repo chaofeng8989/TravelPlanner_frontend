@@ -80,30 +80,35 @@ class PlaceList extends Component {
         const cityTransp = this.props.cityInfo? this.props.cityInfo.transportation: [];
         const placeList = this.props.placeInfo ? this.props.placeInfo : [];
         return(
-            <div className="place-list-box">
-                <div>
-                    <label>Duration: </label>
-                    <InputNumber
-                        min={0}
-                        max={15}
-                        defaultValue={0}
-                        style={{margin: "0 2px"}}
-                        onChange={this.onChangeDuration}
-                    />
-                    <label>days</label>
-                </div>
-                <div>
-                    <Checkbox.Group options = {cityTransp}
+            <div >
+                <div className="info-collector">
+                    <div className="Duration">
+                        <label>Duration: </label>
+                        <InputNumber
+                            min={0}
+                            max={15}
+                            defaultValue={0}
+                            disabled = {this.props.placeSearched}
+                            style={{margin: "0 2px"}}
+                            onChange={this.onChangeDuration}
+                        />
+                        <label>days  (1-15)</label>
+                    </div>
+                    <br/>
+                    <label>Transportation: </label>
+                    <Checkbox.Group options = {cityTransp} 
+                    disabled = {this.props.placeSearched}
                     onChange = {this.onChangeTransp}></Checkbox.Group>
+                    <br/>
+                    <Button className = "design-btn" 
+                    disabled = {this.props.placeSearched}
+                    onClick = {this.designTour}>Desgin Your Own Tour</Button>
                 </div>
-                <div>
-                    <Button className = "design-btn"
-                    onClick = {this.designTour}>Desgin your own tour</Button>
-                </div>
-                <List
-                    className="place-list"
+                <div className="place-list-box">
+                <label className="interest">Please Select Your Desired Places</label>
+                <List className="list"
                     itemLayout="horizontal"
-                    size="small"
+                    size="large"
                     dataSource={placeList}
                     renderItem={item => (
                         <List.Item
@@ -114,19 +119,21 @@ class PlaceList extends Component {
                             value = {item.placeId}/>]}
                         >
                             <List.Item.Meta
-                                avatar={<Avatar size={50} src = {item.photos} />}
-                                title={<p>{item.satname}</p>}
-                                description={`${item.name}`}
+                                avatar={<Avatar shape="square" size={150} src = {item.photos} />}
+                                title={<h6 className="listItem">{item.name}</h6>}
+                                description={<h3>{`rating:  ${item.rating}`}</h3>}
                             />  
                         </List.Item>
                     )}
                 />
+                </div>
                 <div>
                     <Button disabled = {this.state.disabledPrevious} 
                     onClick ={this.previousPage}>previousPage</Button>
                     <Button disabled = {this.props.disabledNext}
                     onClick={this.nextPage}>nextPage</Button>
                 </div>
+                <br/>
             </div>
         );
     }

@@ -4,7 +4,7 @@ import PlaceList from './PlaceList';
 import Axios from 'axios';
 import {GENERATE_TOUR, GET_PLACE} from '../../constant';
 import {Modal, Spin} from 'antd';
-import { withRouter } from "react-router-dom"
+import { withRouter } from "react-router-dom";
 
 class CityDetails extends Component{
   constructor () {
@@ -14,11 +14,12 @@ class CityDetails extends Component{
         choosedInfo: undefined,
         placeInfo: undefined,
         nextPageTokens: [],
+        tourInfo: undefined,
         disabledNext: true,
         disabledPlaces: true,
-        tourInfo: undefined,
         designLoading: false,
         successDesign: false,
+        placeSearched: true,
       }
     }
 
@@ -65,6 +66,7 @@ class CityDetails extends Component{
             placeInfo: response.data.entity,
             nextPageTokens: list,
             selected: [],
+            placeSearched: false,
           })
           this.setNextPageDisabled(response.data.nextPageToken);
         })
@@ -149,19 +151,24 @@ class CityDetails extends Component{
     render() {
       let cityInfo = this.props.location.state.cityInfo ? this.props.location.state.cityInfo: [];
         return (
-          <div>
-            <p>{`${cityInfo.city},${cityInfo.state}`}</p>
-            <div className="city-content">
+          <div className="main">
+            <p className="cityName">{cityInfo.city}</p>
+            <div className="city-input">
 
                 <InsertPage cityInfo = {cityInfo}
                 submit={this.searchPlaces}/>
                 {this.state.designLoading ? 
                     <Spin tip="Designing your tour" /> : null}
-                <PlaceList cityInfo = {cityInfo}
+            </div>
+
+            <div className="city-content">
+            <PlaceList 
+                cityInfo = {cityInfo}
                 placeInfo = {this.state.placeInfo}
                 disabledNext = {this.state.disabledNext}
-                designTour = {this.designTour}
+                placeSearched = {this.state.placeSearched}
                 successDesign = {this.state.successDesign}
+                designTour = {this.designTour}
                 previousPage = {this.fetchPreviousPlaces}
                 nextPage = {this.fetchNextPlaces}/>
             </div>
@@ -169,4 +176,6 @@ class CityDetails extends Component{
         )
     }
 }
+
+
 export default withRouter(CityDetails);

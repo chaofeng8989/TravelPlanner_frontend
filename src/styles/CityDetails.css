@@ -1,3 +1,31 @@
-.city-body{
-    margin-top: 100px;
+.city-input{
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 0px;
+    padding: 0px;
+}
+
+.city-content{
+    margin-right: 30px;
+    margin-top: 10%;
+
+}
+
+.cityName {
+    text-align: middle;
+    color: rgb(35, 77, 190);
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.options {
+    text-indent: 2px;
+
+}
+
+.main {
+    margin-top: 50px;
+    background-image: url("../assets/Echarts/citydetailbg.jpg");
+    background-size: 100%;
 }
