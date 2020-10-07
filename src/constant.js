@@ -1,4 +1,5 @@
 export const BASE_URL = "https://travelplannerbackend.azurewebsites.net/";
+// export const BASE_URL = "http://localhost:8080";
 
 export const GET_CITY = `${BASE_URL}/city?city=`;
 

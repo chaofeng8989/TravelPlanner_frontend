@@ -7,6 +7,7 @@ import { BACKEND_CITY_URL, SMARTY_STREETS_BASE_URL, SMARTY_STREETS_API_WEBSITE_K
 import { withRouter } from "react-router-dom"
 import {  Modal } from 'antd';
 import bg from '../../assets/picture/bg.png';
+import Cookies from 'universal-cookie';
 
 class MainPage extends Component{
     // Jump to the Recommondation Page and pass searchData
@@ -78,9 +79,15 @@ class MainPage extends Component{
 
     // after validate, post the city info to the backend 
     // Debug: passed
+    
     sentCityData = (data) => {
         console.log(data[0]);
-        Axios.post(`${BACKEND_CITY_URL}`, data[0])
+        const cookies = new Cookies();
+        const token = cookies.get('tokens').access_token;
+        const config = {
+          headers: { Authorization: `Bearer ${token}` }
+       };
+        Axios.post(`${BACKEND_CITY_URL}`, data[0], config)
              .then( res => {
                  console.log(res);
                  this.setState({

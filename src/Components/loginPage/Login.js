@@ -6,6 +6,7 @@ import Axios from 'axios';
 import { BACKEND_FORM_LOGIN_URL, BACKEND_THIRD_LOGIN_URL } from '../../constant';
 import Register from './Register';
 import bg from '../../assets/picture/loginbg.png';
+import Cookies from 'universal-cookie';
 
 class Login extends Component {
     
@@ -121,20 +122,24 @@ const LoginForm = Form.create({ name: 'form_in_modal' })(
                         console.log(values);
                         // formData is kind like queue, we need to use formData.get/append
                         // to see the data inside
-                        let formData = new FormData();
                         const url = `${BACKEND_FORM_LOGIN_URL}`;
-                        formData.append('username', values.username);
-                        formData.append('password', values.password);
+                        let data = {
+                            'username' : values.username,
+                            'password' : values.password
+                        }
+
                         // send the formData to backend and validate
                         // set the header of post
                         Axios({
                             method:'post',
                             url:url,
-                            data:formData,
-                            headers: {'Content-Type': 'multipart/form-data'}
+                            data:data,
+                            headers: {'Content-Type': 'application/json'}
                         })
                             .then(res => {
                                 console.log(res)
+                                const cookies = new Cookies();
+                                cookies.set('tokens', res.data);
                                 this.showStatus('Login Success', 'We wil go to the MainPage', true, values.username)
                             })
                             .catch( e => {

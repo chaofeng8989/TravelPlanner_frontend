@@ -5,6 +5,7 @@ import Axios from 'axios';
 import {GENERATE_TOUR, GET_PLACE} from '../../constant';
 import {Modal, Spin} from 'antd';
 import { withRouter } from "react-router-dom";
+import Cookies from 'universal-cookie';
 
 class CityDetails extends Component{
   constructor () {
@@ -58,7 +59,12 @@ class CityDetails extends Component{
     fetchPlaces = (choosedInfo) =>{
       const {interest} = choosedInfo;
       const url = `${GET_PLACE}city=${this.props.location.state.cityInfo.city},${this.props.location.state.cityInfo.state}`;
-      Axios.get(url)
+      const cookies = new Cookies();
+      const token = cookies.get('tokens').access_token;
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+     };
+      Axios.get(url, config)
         .then(response => {
           let list = [];
           list.push(response.data.nextPageToken);
@@ -81,7 +87,12 @@ class CityDetails extends Component{
       else {
         url = `${GET_PLACE}nextPageToken=${this.state.nextPageTokens[pageNumber - 3]}`;
       }
-      Axios.get(url)
+      const cookies = new Cookies();
+      const token = cookies.get('tokens').access_token;
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+     };
+      Axios.get(url, config)
       .then(response => {
         this.setState({
           placeInfo: response.data.entity,
@@ -93,7 +104,12 @@ class CityDetails extends Component{
     //获取下一页的信息 还未做上一页，同时存储上一页的nextpagetoken
     fetchNextPlaces = (pageNumber) => {
       const url = `${GET_PLACE}nextPageToken=${this.state.nextPageTokens[pageNumber - 1]}`;
-      Axios.get(url)
+      const cookies = new Cookies();
+      const token = cookies.get('tokens').access_token;
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+     };
+      Axios.get(url, config)
         .then(response => {
           let list = this.state.nextPageTokens;
           console.log(pageNumber);
@@ -123,11 +139,16 @@ class CityDetails extends Component{
       this.setState({
         designLoading: true,
       })
+      const cookies = new Cookies();
+      const token = cookies.get('tokens').access_token;
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+     };
       Axios.post(url, {
           placeIdSet: places, 
           duration: duration,
           travelType: transportation,
-      })
+      }, config)
         .then(response => {
           this.setState({
             tourInfo: response.data,

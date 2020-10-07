@@ -121,10 +121,10 @@ const RegisterForm = Form.create()(
             loading: false,
         };
 
-        showSuccess = (res) => {
+        showSuccess = (username) => {
             let secondsToGo = 2;
             const modal = Modal.success({
-              title: 'Successful register! You username is '+`${res.username}`,
+              title: 'Successful register! You username is '+`${username}`,
               content: 'go back and log in!',
             });
             setTimeout(() => {
@@ -155,7 +155,8 @@ const RegisterForm = Form.create()(
                     console.log('Received values of form: ', values);
                     console.log(url)
                     Axios.post(url, values)
-                        .then( (values, res) => {
+                        .then( res => {
+                            console.log(res, values);
                             this.showSuccess(values.username)
                         })
                         .catch( e => {
