@@ -5,6 +5,8 @@ export const GET_CITY = `${BASE_URL}/city?city=`;
 
 export const GET_PLACE = `${BASE_URL}/place/search?`;
 
+export const GET_SPECIFIC_PLACE = `${BASE_URL}/place/`
+
 export const GENERATE_TOUR = `${BASE_URL}/tour/generate`;
 
 // validate address api

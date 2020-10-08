@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { List, Avatar, Button, Checkbox, InputNumber, Spin, Radio} from 'antd';
+import { List, Avatar, Button, Checkbox, InputNumber} from 'antd';
+
 
 class PlaceList extends Component {
     constructor(){
@@ -13,9 +14,12 @@ class PlaceList extends Component {
         }
     }
     
+
     onChangeDuration = insertValue => {
         if(insertValue > 15) {
             insertValue = 15;
+        } else if( insertValue < 0) {
+            insertValue = 1;
         }
         this.setState({
           duration: insertValue,
@@ -76,6 +80,11 @@ class PlaceList extends Component {
         })
     }
 
+    getSpecificPlaces = (setting) => {
+        this.props.showSpecificPlaces(setting.target.value);
+    }
+
+
     render(){
         const cityTransp = this.props.cityInfo? this.props.cityInfo.transportation: [];
         const placeList = this.props.placeInfo ? this.props.placeInfo : [];
@@ -121,7 +130,8 @@ class PlaceList extends Component {
                             <List.Item.Meta
                                 avatar={<Avatar shape="square" size={150} src = {item.photos} />}
                                 title={<h6 className="listItem">{item.name}</h6>}
-                                description={<h3>{`rating:  ${item.rating}`}</h3>}
+                                description={<Button value={item.placeId} onClick={this.getSpecificPlaces}>
+                                    Show specific information</Button>}
                             />  
                         </List.Item>
                     )}
