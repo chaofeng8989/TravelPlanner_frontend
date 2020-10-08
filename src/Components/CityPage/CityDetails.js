@@ -3,7 +3,7 @@ import InsertPage from './InsertPage';
 import PlaceList from './PlaceList';
 import Axios from 'axios';
 import {GENERATE_TOUR, GET_PLACE, GET_SPECIFIC_PLACE} from '../../constant';
-import {Modal, Spin, Drawer, Divider, Col, Row} from 'antd';
+import {List, Modal, Spin, Drawer, Divider, Col, Row} from 'antd';
 import { withRouter } from "react-router-dom";
 import Cookies from 'universal-cookie';
 
@@ -275,6 +275,18 @@ class CityDetails extends Component{
                     />
                     </Col>
                 </Row>
+                <Divider/>
+                <List className="list"
+                    itemLayout="horizontal"
+                    size="small"
+                    dataSource={placeDetail.photos}
+                    renderItem={item => (
+                        <List.Item
+                          extra={<img width={575} alt="" src={item}/>}
+                        >  
+                        </List.Item>
+                    )}
+                />
                 </Drawer>
           </div>
         )
