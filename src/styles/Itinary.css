@@ -7,65 +7,13 @@
     position: relative;
     padding: 10pt;
     height: 800px;
-    width: 450px;
+    width: 500px;
 }
 
 .GoogleMap{
     position: absolute;
     padding-top: 10pt;
-    left: 700px;
+    left: 500px;
     width: 800px;
     height: 800px;
 }
-
-.tour-list{
-    padding: 10px;
-    border: 2px solid rgb(204, 204, 204);
-    margin-top: 10px;
-    margin-bottom:30px;
-    margin-left: 100px;
-     box-shadow: rgba(0,0,0,0.4);
-    z-index:1;
-     background:#f9f9f9;
-    width: 99%; 
-    height:80%;
-    position: absolute;
-    overflow: scroll;
-}
-
-.place-list-box{
-    padding: 10px;
-    border: 2px solid rgb(204, 204, 204);
-    margin-top: 10px;
-    margin-left: 20px;
-    height: 350px; 
-    width: 99%; 
-    overflow: scroll;
-}
-
-.design-btn{
-    padding: 10px;
-    margin-top: 20px;
-    background-color: cadetblue;
-}
-.tripheader{
- position:relative;
-
-background-size: cover;
-padding:15px 10px 20px;
-background: url(https://upload.wikimedia.org/wikipedia/commons/2/2f/Space_Needle002.jpg) center center no-repeat;
-background-size:100% 100%;
-}
-.display-name{
-color:white;
-font: bold 20px ;
-text-align:center;
-text-shadow: 0 0 5px black;
-
-
-}
-
-.scrollable-container {
-    height: 100px;
-    overflow-y: scroll;
-  }

@@ -7,6 +7,7 @@ class TestMap extends Component {
       super();
       this.state = {
         direction: null,
+        rending: false,
       };
   }
 
@@ -20,7 +21,8 @@ addWayPoints(places) {
   return res;
 }
 
-componentDidMount = ()=> {
+componentDidMount () {
+    const points = this.props.placeId.length<=2?null:this.addWayPoints(this.props.placeId);
     const directionsService = new google.maps.DirectionsService();
     directionsService.route(
         {
@@ -30,11 +32,37 @@ componentDidMount = ()=> {
             destination: {
             'placeId': this.props.placeId[this.props.placeId.length-1]
             },
-            waypoints: this.props.placeId.length<=2?null:this.addWayPoints(this.props.placeId),
-            // waypoints: [{ stopover: true, location: { placeId: "ChIJRVj1dgPP20YRBWB4A_sUx_Q" } }],
+            waypoints: points,
             optimizeWaypoints: true,
             travelMode: this.props.transport,
+        },
+        (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                console.log(result)
+                this.setState({
+                    directions: result
+                });
+            } else {
+                console.error(`error fetching directions ${result}`);
+            }
+        }
+    );
+}
 
+componentDidUpdate () {
+    const points = this.props.placeId.length<=2?null:this.addWayPoints(this.props.placeId);
+    const directionsService = new google.maps.DirectionsService();
+    directionsService.route(
+        {
+            origin: {
+                'placeId': this.props.placeId[0]
+              },
+            destination: {
+            'placeId': this.props.placeId[this.props.placeId.length-1]
+            },
+            waypoints: points,
+            optimizeWaypoints: true,
+            travelMode: this.props.transport,
         },
         (result, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
@@ -50,7 +78,6 @@ componentDidMount = ()=> {
 }
 
 render() {
-    this.componentDidMount();
     const GoogleMapExample = withGoogleMap(props => (
         <GoogleMap
             center={{lat:36.77,lng:-119.41}}
