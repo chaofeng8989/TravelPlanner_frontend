@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import GoogleMap from './GoogleMap';
 import { trips, transportation } from '../TestData.js';
 import { GENERATE_TOUR } from '../constant';
@@ -50,8 +50,8 @@ export default class Itinary extends Component {
         var Time = []
         for (var i = 0; i < p.length; i++) {
             var dailyPlan = p[i];
-            var dailyPlaces = dailyPlan.simplePlaces;
-            var dailyTime = dailyPlan.time;
+            var dailyPlaces = dailyPlan.placeList;
+            var dailyTime = dailyPlan.placeTime;
             Time.push(dailyTime);
             var dailyPlaceID = [];
             for (var j = 0; j < dailyPlaces.length; j++) {
@@ -65,17 +65,20 @@ export default class Itinary extends Component {
 
 
     render() {
-        const tripIdx = this.props.location.state.selectedTripIdx >= 0 ? this.props.location.state.selectedTripIdx : null;
-        const selectedTrip = tripIdx != null ? trips[tripIdx].day : this.props.location.state.tourInfo.day;
+        if (this.props.location.state.selectedTrip == null) {
+            return "Loading"
+        }
+        let selectedTrip = this.props.location.state.selectedTrip;
+        console.log(selectedTrip)  //
+
         this.generatePlaces(selectedTrip);
         // 把time参数依次merge进simpleplace
         const result = selectedTrip.map((o) => Object.assign({}, o, {
-            simplePlaces: o.simplePlaces.map((p, index) => Object.assign({ time: o.time[index] }, p))
+            placeList: o.placeList.map((p, index) => Object.assign({ time: o.placeTime[index] }, p))
 
         }))
         console.log(result);
 
-        console.log(selectedTrip)  //
         return (
             <div className="Itinary">
 
@@ -105,15 +108,15 @@ export default class Itinary extends Component {
                                             className="place-list"
                                             itemLayout="vertical  "
                                             split="true"
-                                            dataSource={day.simplePlaces}
+                                            dataSource={day.placeList}
                                             renderItem={item => (
                                                 <List.Item >
                                                     <List.Item.Meta
                                                         avatar={<Avatar size={50} src={item.photo} />}
                                                         title={<p>{item.name}</p>}
-                                                        description={<p>Starting Time {parseInt(item.time/60)}:{ (Array(2).join(0)+(item.time-60*parseInt(item.time/60))).slice(-2)} </p>}
+                                                        description={<p>Starting Time {parseInt(item.time / 60)}:{(Array(2).join(0) + (item.time - 60 * parseInt(item.time / 60))).slice(-2)} </p>}
                                                     />
-                                                    { <span>
+                                                    {<span>
                                                         <Rate allowHalf value={item.rating} mountNode />
                                                         {<span className="ant-rate-text">{item.rating} stars</span>}
                                                     </span>
@@ -124,10 +127,10 @@ export default class Itinary extends Component {
                                 </div>
                             ))
                         }
-                         <div className="Date-selection">
+                        <div className="Date-selection">
                             <Divider> Save Your Trip </Divider>
                             <label>Ranking: </label>
-                            <Rate allowHalf  mountNode />
+                            <Rate allowHalf mountNode />
                         </div>
 
                     </div>

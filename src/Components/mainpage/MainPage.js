@@ -15,9 +15,7 @@ class MainPage extends Component{
     toOtherRoute = (value) => {
         const urlObj = {
             pathname: '/home/Recommondation',
-            state: {
-                key: value,
-            }
+            cityData: this.state.searchData
         }
         console.log(value)
         this.props.history.push(urlObj)
@@ -53,41 +51,46 @@ class MainPage extends Component{
         let value1 = value.split("  ");
         let cityName = value1[0];
         let stateName = value1[1];
-        console.log(cityName);
-        console.log(stateName);
+        // console.log(cityName);
+        // console.log(stateName);
         
-        const url = `${SMARTY_STREETS_BASE_URL}?key=${SMARTY_STREETS_API_WEBSITE_KEY}&city=${cityName}&state=${stateName}`;
-        console.log(url);
+        // const url = `${SMARTY_STREETS_BASE_URL}?key=${SMARTY_STREETS_API_WEBSITE_KEY}&city=${cityName}&state=${stateName}`;
+        // console.log(url);
         
-        Axios.get(url)
-             .then(response => {
-                 console.log(response.data);
-                 this.setState({
-                    cityData: JSON.parse(JSON.stringify(response.data[0].city_states, ['city','state']))
-                 }, () => {
-                     this.sentCityData(this.state.cityData)
-                 })
-             })
-             .catch(error => {
-                 // input valid
-                console.log('input invalid -> ', error);
-                this.setState({
-                    searchLoading: false
-                }, this.showInvalid('You have entered a wrong place'))
-             })
+        let cityData = {"city" : cityName, "state":stateName};
+ 
+        console.log(cityData)
+        this.sentCityData(cityData)
+
+        // Axios.get(url)
+        //      .then(response => {
+        //          console.log(response.data);
+        //          this.setState({
+        //             cityData: JSON.parse(JSON.stringify(response.data[0].city_states, ['city','state']))
+        //          }, () => {
+        //              this.sentCityData(this.state.cityData)
+        //          })
+        //      })
+        //      .catch(error => {
+        //          // input valid
+        //         console.log('input invalid -> ', error);
+        //         this.setState({
+        //             searchLoading: false
+        //         }, this.showInvalid('You have entered a wrong place'))
+        //      })
     }
 
     // after validate, post the city info to the backend 
     // Debug: passed
     
     sentCityData = (data) => {
-        console.log(data[0]);
+        console.log(data);
         const cookies = new Cookies();
         const token = cookies.get('tokens').access_token;
         const config = {
           headers: { Authorization: `Bearer ${token}` }
        };
-        Axios.post(`${BACKEND_CITY_URL}`, data[0], config)
+        Axios.post(`${BACKEND_CITY_URL}`, data, config)
              .then( res => {
                  console.log(res);
                  this.setState({

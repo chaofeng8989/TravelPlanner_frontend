@@ -18,7 +18,7 @@ class CityDetails extends Component{
   constructor () {
       super();
       this.state = {
-        cityAddress: "Seattle,Washington",
+        cityAddress: "seattle",
         choosedInfo: undefined,
         placeInfo: undefined,
         placeDetail: undefined,
@@ -33,11 +33,23 @@ class CityDetails extends Component{
       }
     }
 
+    
+
     toOtherRoute = () => {
+      let data = this.state.selectedTrip.day.map(item => {
+        return {
+          placeList: item.simplePlaces,
+          placeTime: item.time
+        };
+      });
+      console.log('tootherrout', this.state.selectedTrip);
       const urlObj = {
           pathname: `/home/Itinary`,
+
           state: {
             tourInfo: this.state.tourInfo,
+            selectedTrip: data
+
           }
       }
       this.props.history.push(urlObj);
@@ -175,6 +187,8 @@ class CityDetails extends Component{
             tourInfo: response.data,
             designLoading: false,
             successDesign: true,
+            selectedTrip: response.data,
+
           })
           this.toOtherRoute()
         })
